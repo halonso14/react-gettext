@@ -1,51 +1,38 @@
-import React from 'react';
-import hoistNonReactStatic from 'hoist-non-react-statics';
+import React = require('react');
+import hoistNonReactStatic = require('hoist-non-react-statics');
 
-import withGettext from './withGettext';
-import Textdomain from './Textdomain';
-import TextdomainContext from './TextdomainContext';
-import buildTextdomain from './buildTextdomain';
+declare module 'react-gettext' {
+	export interface ContextType {
+		gettext: Function;
+		ngettext: Function;
+		xgettext: Function;
+		nxgettext: Function;
+	}
 
-declare module 'react-gettext';
+	export interface TextdomainProps {
+		translations: Function | String[] | String;
+		plural: Function | String;
+		children?: ContextType;
+	}
 
-export const Textdomain: any;
-export const TextdomainContext: any;
+	export function buildTextdomain({
+		translations,
+		plural,
+	}: TextdomainProps): ContextType;
 
-export interface domainProps {
-	gettext: Function;
-	ngettext: Function;
-	xgettext: Function;
-	nxgettext: Function;
+	export interface TextdomainContext extends React.Context<ContextType> {}
+
+	export interface Textdomain extends React.Component, TextdomainProps {}
+
+	export interface WithGettextType extends Textdomain {}
+
+	export function withGettext(
+		{ translations, plural }: TextdomainProps,
+		options: object
+	): (
+		WrappedComponent: React.ReactElement
+	) => WithGettextType &
+		hoistNonReactStatic.NonReactStatics<
+			React.ComponentType<React.ReactElement>
+		>;
 }
-
-export function buildTextdomain(
-	translations: string,
-	plural: string
-): domainProps;
-
-export interface TextdomainInterface extends React.Component, domainProps {
-	translations: any;
-	plural: any;
-	children: any;
-	getChildContext: any;
-}
-
-export interface TextdomainContext
-	extends React.Component<buildTextdomain, string> {}
-
-export interface withGettextInterface extends TextdomainInterface {
-	translations: any;
-	pluralForm: any;
-	children: any;
-	options: any;
-}
-
-export function withGettext(
-	translations: any,
-	pluralForm: any,
-	options: any
-): (
-	WithGettext: withGettextInterface,
-	WrappedComponent: React.ReactElement
-) => React.ComponentType<any> &
-	hoistNonReactStatic.NonReactStatics<React.ComponentType<any>>;

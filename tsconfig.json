@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es5",
+		"lib": ["dom", "es5"],
+		"jsx": "react",
+		"moduleResolution": "node",
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"noEmit": true,
+		"baseUrl": ".",
+		"paths": { "react-gettext": ["./src"] },
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true
+	},
+	"include": ["src"]
+}
