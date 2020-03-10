@@ -2,36 +2,43 @@ import React = require('react');
 import hoistNonReactStatic = require('hoist-non-react-statics');
 
 declare module 'react-gettext' {
-	export interface ContextType {
+	export type translationsType = {
+		translations: Function | String[] | String;
+	};
+
+	export interface ContextType extends React.Context<Function> {
 		gettext: Function;
 		ngettext: Function;
 		xgettext: Function;
 		nxgettext: Function;
 	}
 
-	export interface TextdomainProps {
-		translations: Function | String[] | String;
-		plural: Function | String;
-		children?: ContextType;
+	export function buildTextdomain(
+		translations?: translationsType,
+		plural?: String
+	): ContextType;
+
+	export class TextdomainContext extends React.Context<ContextType> {
+		static Provider: React.Provider<ContextType>;
+		static Consumer: React.Consumer<ContextType>;
 	}
 
-	export function buildTextdomain({
-		translations,
-		plural,
-	}: TextdomainProps): ContextType;
+	export class Textdomain extends React.Component<ContextType> {
+		translations: translationsType;
+		plural: String;
+	}
 
-	export interface TextdomainContext extends React.Context<ContextType> {}
-
-	export interface Textdomain extends React.Component, TextdomainProps {}
-
-	export interface WithGettextType extends Textdomain {}
+	export class WithGettext extends Textdomain {
+		displayName: String;
+	}
 
 	export function withGettext(
-		{ translations, plural }: TextdomainProps,
-		options: object
+		translations?: translationsType,
+		plural?: String,
+		options?: object
 	): (
 		WrappedComponent: React.ReactElement
-	) => WithGettextType &
+	) => WithGettext &
 		hoistNonReactStatic.NonReactStatics<
 			React.ComponentType<React.ReactElement>
 		>;
